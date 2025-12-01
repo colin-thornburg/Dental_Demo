@@ -93,13 +93,13 @@ def execute_dbt_query(metrics, dimensions, where_clause=None, limit=100):
 def parse_natural_language_query(user_query):
     """Use OpenAI to convert natural language to semantic layer query"""
     try:
-        system_prompt = f"""You are a data analyst assistant that converts natural language questions into dbt semantic layer queries.
+        system_prompt = """You are a data analyst assistant that converts natural language questions into dbt semantic layer queries.
 
 Available Metrics:
-{json.dumps(AVAILABLE_METRICS, indent=2)}
+""" + json.dumps(AVAILABLE_METRICS, indent=2) + """
 
 Available Dimensions:
-{json.dumps(AVAILABLE_DIMENSIONS, indent=2)}
+""" + json.dumps(AVAILABLE_DIMENSIONS, indent=2) + """
 
 Convert the user's question into a JSON object with:
 - metrics: array of metric names to query
@@ -107,24 +107,24 @@ Convert the user's question into a JSON object with:
 - where_clause: optional filter using dbt semantic layer syntax
 
 WHERE CLAUSE SYNTAX:
-- Use dimension references like: {{"{{ Dimension('facility__brand_name') }} = 'Aspen Dental'"}}
-- For time filters: {{"{{ TimeDimension('metric_time', 'year') }} = 2024"}}
-- Multiple conditions: {{"{{ Dimension('facility__brand_name') }} = 'Aspen Dental' AND {{ TimeDimension('metric_time', 'year') }} = 2024"}}
+- Use dimension references like: "{{ Dimension('facility__brand_name') }} = 'Aspen Dental'"
+- For time filters: "{{ TimeDimension('metric_time', 'year') }} = 2024"
+- Multiple conditions: "{{ Dimension('facility__brand_name') }} = 'Aspen Dental' AND {{ TimeDimension('metric_time', 'year') }} = 2024"
 
 Examples:
 User: "Show me revenue by brand for 2024"
-Response: {{"metrics": ["revenue"], "dimensions": ["facility__brand_name", "metric_time__year"]}}
+Response: {"metrics": ["revenue"], "dimensions": ["facility__brand_name", "metric_time__year"]}
 
 User: "What is revenue for Aspen Dental?"
-Response: {{"metrics": ["revenue"], "where_clause": "{{ Dimension('facility__brand_name') }} = 'Aspen Dental'"}}
+Response: {"metrics": ["revenue"], "where_clause": "{{ Dimension('facility__brand_name') }} = 'Aspen Dental'"}
 
 User: "Show new patients for ClearChoice in 2024"
-Response: {{"metrics": ["new_patients"], "dimensions": ["metric_time__month"], "where_clause": "{{ Dimension('facility__brand_name') }} = 'ClearChoice' AND {{ TimeDimension('metric_time', 'year') }} = 2024"}}
+Response: {"metrics": ["new_patients"], "dimensions": ["metric_time__month"], "where_clause": "{{ Dimension('facility__brand_name') }} = 'ClearChoice' AND {{ TimeDimension('metric_time', 'year') }} = 2024"}
 
 IMPORTANT: 
 - Brand names must be exact: "Aspen Dental", "ClearChoice Dental Implant Centers", "WellNow Urgent Care", "Chapter Aesthetic Studio", "Lovet Pet Health Care"
-- Do NOT use {% if %} statements or other Jinja control flow
-- Only use {{ Dimension() }} and {{ TimeDimension() }} functions
+- Do NOT use Jinja control flow statements
+- Only use {{ Dimension() }} and {{ TimeDimension() }} functions for filters
 
 Only return valid JSON, no other text."""
 

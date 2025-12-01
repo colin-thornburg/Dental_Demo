@@ -103,15 +103,28 @@ Available Dimensions:
 
 Convert the user's question into a JSON object with:
 - metrics: array of metric names to query
-- dimensions: array of dimensions to group by
-- where_clause: optional filter (use dbt Jinja syntax)
+- dimensions: array of dimensions to group by (optional, omit if not needed for grouping)
+- where_clause: optional filter using dbt semantic layer syntax
 
-Example:
+WHERE CLAUSE SYNTAX:
+- Use dimension references like: {{"{{ Dimension('facility__brand_name') }} = 'Aspen Dental'"}}
+- For time filters: {{"{{ TimeDimension('metric_time', 'year') }} = 2024"}}
+- Multiple conditions: {{"{{ Dimension('facility__brand_name') }} = 'Aspen Dental' AND {{ TimeDimension('metric_time', 'year') }} = 2024"}}
+
+Examples:
 User: "Show me revenue by brand for 2024"
 Response: {{"metrics": ["revenue"], "dimensions": ["facility__brand_name", "metric_time__year"]}}
 
-User: "What was the no-show rate last month by facility?"
-Response: {{"metrics": ["no_show_rate"], "dimensions": ["facility__facility_name", "metric_time__month"]}}
+User: "What is revenue for Aspen Dental?"
+Response: {{"metrics": ["revenue"], "where_clause": "{{ Dimension('facility__brand_name') }} = 'Aspen Dental'"}}
+
+User: "Show new patients for ClearChoice in 2024"
+Response: {{"metrics": ["new_patients"], "dimensions": ["metric_time__month"], "where_clause": "{{ Dimension('facility__brand_name') }} = 'ClearChoice' AND {{ TimeDimension('metric_time', 'year') }} = 2024"}}
+
+IMPORTANT: 
+- Brand names must be exact: "Aspen Dental", "ClearChoice Dental Implant Centers", "WellNow Urgent Care", "Chapter Aesthetic Studio", "Lovet Pet Health Care"
+- Do NOT use {% if %} statements or other Jinja control flow
+- Only use {{ Dimension() }} and {{ TimeDimension() }} functions
 
 Only return valid JSON, no other text."""
 
@@ -172,7 +185,11 @@ def chat():
     parsed = parse_natural_language_query(user_query)
     
     if not parsed['success']:
-        return jsonify({'error': parsed['error']}), 500
+        return jsonify({
+            'error': 'Failed to parse your query',
+            'details': parsed.get('error'),
+            'query': user_query
+        }), 500
     
     # Execute the query
     query_params = parsed['query']
@@ -181,6 +198,18 @@ def chat():
         query_params.get('dimensions', []),
         query_params.get('where_clause')
     )
+    
+    # Add helpful error messages
+    if not result.get('success', False):
+        error_msg = result.get('error', 'Unknown error')
+        
+        # Provide user-friendly error messages
+        if 'brand_name' in error_msg.lower():
+            suggestion = "Try using exact brand names: 'Aspen Dental', 'ClearChoice Dental Implant Centers', 'WellNow Urgent Care', 'Chapter Aesthetic Studio', or 'Lovet Pet Health Care'"
+            result['suggestion'] = suggestion
+        elif 'where filter' in error_msg.lower():
+            suggestion = "There was an issue with the filter. Try rephrasing your question or removing specific filters."
+            result['suggestion'] = suggestion
     
     return jsonify({
         'query': user_query,

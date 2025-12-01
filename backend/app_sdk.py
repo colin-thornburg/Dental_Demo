@@ -4,7 +4,7 @@ import os
 import json
 from dotenv import load_dotenv
 from openai import OpenAI
-from dbt_sl import SemanticLayerClient
+from dbtsl import SemanticLayerClient
 
 load_dotenv()
 
@@ -13,14 +13,16 @@ app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})
 
 # Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-# Initialize dbt Semantic Layer client
-sl_client = SemanticLayerClient(
-    environment_id=int(os.getenv('DBT_ENVIRONMENT_ID')),
-    auth_token=os.getenv('DBT_SERVICE_TOKEN'),
-    host=os.getenv('DBT_HOST', 'semantic-layer.cloud.getdbt.com')
-)
+# Initialize dbt Semantic Layer client (session created per request)
+def get_sl_client():
+    """Create a Semantic Layer client instance"""
+    return SemanticLayerClient(
+        environment_id=int(os.getenv('DBT_ENVIRONMENT_ID')),
+        auth_token=os.getenv('DBT_SERVICE_TOKEN'),
+        host=os.getenv('DBT_HOST', 'semantic-layer.cloud.getdbt.com')
+    )
 
 # Available metrics from semantic layer
 AVAILABLE_METRICS = {
@@ -58,56 +60,46 @@ AVAILABLE_DIMENSIONS = {
 def execute_semantic_layer_query(metrics, dimensions=None, where_clause=None, limit=100):
     """Execute a query using the dbt Semantic Layer SDK"""
     try:
-        # Build the query
-        query_params = {
-            'metrics': metrics,
-        }
+        client = get_sl_client()
         
-        if dimensions:
-            query_params['group_by'] = dimensions
-        
-        if where_clause:
-            query_params['where'] = where_clause
-        
-        query_params['limit'] = limit
-        
-        # Execute query using SDK
-        result = sl_client.query(**query_params)
-        
-        # Convert result to a format similar to CLI output for consistency
-        if result and hasattr(result, 'to_dict'):
-            data = result.to_dict()
+        # All API calls must be within a session context manager
+        with client.session():
+            # Build query parameters
+            query_params = {'metrics': metrics}
+            
+            if dimensions:
+                query_params['group_by'] = dimensions
+            
+            if where_clause:
+                query_params['where'] = where_clause
+            
+            query_params['limit'] = limit
+            
+            # Execute query - returns a PyArrow table
+            arrow_table = client.query(**query_params)
+            
+            # Convert PyArrow table to list of dicts for easier handling
+            data_dict = arrow_table.to_pydict()
+            
+            # Convert to list of row dicts
+            num_rows = len(list(data_dict.values())[0]) if data_dict else 0
+            rows = []
+            for i in range(num_rows):
+                row = {key: values[i] for key, values in data_dict.items()}
+                rows.append(row)
+            
             return {
                 'success': True,
-                'data': data,
-                'output': format_as_table(data)  # Format for display
+                'data': {'rows': rows},
+                'output': format_as_table(rows)
             }
-        elif result:
-            # Handle different result formats
-            return {
-                'success': True,
-                'data': result,
-                'output': str(result)
-            }
-        else:
-            return {'error': 'No data returned', 'success': False}
             
     except Exception as e:
         return {'error': str(e), 'success': False}
 
-def format_as_table(data):
+def format_as_table(rows):
     """Format query results as ASCII table for compatibility with frontend parser"""
-    if not data or not isinstance(data, dict):
-        return str(data)
-    
-    # Try to extract rows from various possible formats
-    rows = []
-    if 'rows' in data:
-        rows = data['rows']
-    elif isinstance(data, list):
-        rows = data
-    
-    if not rows:
+    if not rows or not isinstance(rows, list):
         return "No data"
     
     # Get headers
@@ -165,7 +157,7 @@ IMPORTANT:
 
 Only return valid JSON, no other text."""
 
-        response = client.chat.completions.create(
+        response = openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},

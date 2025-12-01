@@ -20,11 +20,17 @@ We've migrated from using **dbt Cloud CLI** (development) to the **dbt Semantic 
 
 ### 1. Install New Dependency
 
+The correct package is `dbt-sl-sdk` (not `dbt-semantic-layer`).
+
 ```bash
 cd backend
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
+This installs:
+- `dbt-sl-sdk[sync]` - The official dbt Semantic Layer Python SDK
+- `pyarrow` - Required for handling query results
 
 ### 2. Update Your .env File
 

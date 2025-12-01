@@ -1,0 +1,17 @@
+provider_id,brand_id,facility_id,first_name,last_name,credential,specialty,hire_date,is_active,hourly_rate
+DR001,1,101,Michael,Reynolds,DDS,General Dentistry,2016-01-15,true,185.00
+DR002,1,101,Sarah,Chen,DMD,Cosmetic Dentistry,2018-03-20,true,195.00
+DR003,1,102,James,Patel,DDS,General Dentistry,2019-06-01,true,175.00
+DR004,1,103,Emily,Washington,DMD,Pediatric Dentistry,2017-09-10,true,180.00
+DR005,1,104,Robert,Kim,DDS,Orthodontics,2020-02-15,true,200.00
+DR006,1,105,Jennifer,Lopez,DMD,General Dentistry,2018-08-22,true,178.00
+DR007,2,201,David,Goldstein,DMD,Prosthodontics,2019-01-10,true,350.00
+DR008,2,202,Lisa,Martinez,DDS,Oral Surgery,2020-05-15,true,375.00
+DR009,2,203,William,Thompson,DMD,Prosthodontics,2021-02-28,true,340.00
+DR010,3,301,Amanda,Singh,MD,Family Medicine,2017-04-12,true,225.00
+DR011,3,302,Christopher,Brown,DO,Emergency Medicine,2018-09-30,true,235.00
+DR012,3,303,Maria,Garcia,PA-C,Physician Assistant,2019-07-15,true,145.00
+DR013,4,401,Nicole,Anderson,MD,Dermatology,2021-01-20,true,280.00
+DR014,4,402,Brian,Wilson,RN,Aesthetic Nursing,2022-04-10,true,125.00
+DR015,5,501,Katherine,Moore,DVM,Veterinary Medicine,2020-03-05,true,165.00
+DR016,5,502,Thomas,Davis,DVM,Veterinary Surgery,2021-06-18,true,185.00

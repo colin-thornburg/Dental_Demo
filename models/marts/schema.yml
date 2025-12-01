@@ -1,0 +1,299 @@
+version: 2
+
+models:
+  - name: fct_daily_facility_metrics
+    description: >
+      Daily aggregated metrics by facility. This is the primary fact table for 
+      answering executive questions about facility performance, patient visits, 
+      revenue, and operational metrics like no-show rates and cancellations.
+      
+      Example questions this table answers:
+      - How many new patient visits did we have yesterday?
+      - What was total revenue for Chicago offices this week?
+      - Which facilities have the highest no-show rates?
+      - How does this month compare to last month?
+    
+    columns:
+      - name: metric_date
+        description: "The date of the metrics"
+        data_type: date
+        tests:
+          - not_null
+      - name: facility_id
+        description: "Primary key for the facility"
+        data_type: number
+        tests:
+          - not_null
+      - name: facility_name
+        description: "Name of the facility"
+        data_type: varchar
+      - name: facility_code
+        description: "Short code for the facility"
+        data_type: varchar
+      - name: facility_city
+        description: "City where facility is located"
+        data_type: varchar
+      - name: facility_state
+        description: "State where facility is located"
+        data_type: varchar
+      - name: region
+        description: "Geographic region"
+        data_type: varchar
+      - name: brand_id
+        description: "Foreign key to brand"
+        data_type: number
+      - name: brand_name
+        description: "Name of the brand"
+        data_type: varchar
+      - name: brand_code
+        description: "Short code for the brand"
+        data_type: varchar
+      - name: brand_category
+        description: "Category of the brand"
+        data_type: varchar
+      - name: total_appointments
+        description: "Total number of appointments scheduled"
+        data_type: number
+      - name: completed_appointments
+        description: "Number of appointments that were completed"
+        data_type: number
+      - name: cancelled_appointments
+        description: "Number of appointments that were cancelled"
+        data_type: number
+      - name: no_show_appointments
+        description: "Number of appointments where patient did not show"
+        data_type: number
+      - name: scheduled_appointments
+        description: "Number of appointments still scheduled (future)"
+        data_type: number
+      - name: unique_patients
+        description: "Count of unique patients seen"
+        data_type: number
+      - name: active_providers
+        description: "Count of providers who saw patients"
+        data_type: number
+      - name: new_patient_visits
+        description: "Number of new patient visits (first-time patients)"
+        data_type: number
+      - name: total_revenue
+        description: "Total revenue generated"
+        data_type: number
+      - name: total_gross_profit
+        description: "Total gross profit (revenue minus cost)"
+        data_type: number
+      - name: total_insurance_revenue
+        description: "Revenue paid by insurance"
+        data_type: number
+      - name: total_patient_revenue
+        description: "Revenue paid directly by patients"
+        data_type: number
+      - name: total_discounts
+        description: "Total discounts applied"
+        data_type: number
+      - name: total_transactions
+        description: "Number of financial transactions"
+        data_type: number
+      - name: no_show_rate
+        description: "Percentage of appointments that were no-shows"
+        data_type: number
+      - name: cancellation_rate
+        description: "Percentage of appointments that were cancelled"
+        data_type: number
+      - name: revenue_per_visit
+        description: "Average revenue per completed visit"
+        data_type: number
+
+  - name: dim_patient_summary
+    description: >
+      Patient dimension table with lifetime metrics and demographics.
+      Used for patient segmentation, lifetime value analysis, and 
+      understanding patient behavior patterns.
+      
+      Example questions this table answers:
+      - What is the average patient lifetime value by acquisition source?
+      - Which age groups have the highest no-show rates?
+      - How many patients use multiple brands?
+    
+    columns:
+      - name: patient_id
+        description: "Primary key for the patient"
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
+      - name: full_name
+        description: "Patient's full name"
+        data_type: varchar
+      - name: date_of_birth
+        description: "Patient's date of birth"
+        data_type: date
+      - name: gender
+        description: "Patient's gender"
+        data_type: varchar
+      - name: city
+        description: "Patient's city"
+        data_type: varchar
+      - name: state
+        description: "Patient's state"
+        data_type: varchar
+      - name: zip_code
+        description: "Patient's zip code"
+        data_type: number
+      - name: acquisition_source
+        description: "How patient was acquired"
+        data_type: varchar
+      - name: patient_created_at
+        description: "When patient record was created"
+        data_type: timestamp_ntz
+      - name: is_active
+        description: "Whether patient is active"
+        data_type: boolean
+      - name: primary_brand_id
+        description: "Primary brand ID"
+        data_type: number
+      - name: primary_brand_name
+        description: "Primary brand the patient uses"
+        data_type: varchar
+      - name: primary_brand_category
+        description: "Primary brand category"
+        data_type: varchar
+      - name: age
+        description: "Calculated age of patient"
+        data_type: number
+      - name: age_group
+        description: "Age bucket (Under 18, 18-34, 35-54, 55-64, 65+)"
+        data_type: varchar
+      - name: total_appointments
+        description: "Total appointments"
+        data_type: number
+      - name: completed_appointments
+        description: "Completed appointments"
+        data_type: number
+      - name: cancelled_appointments
+        description: "Cancelled appointments"
+        data_type: number
+      - name: no_show_appointments
+        description: "No-show appointments"
+        data_type: number
+      - name: first_appointment_date
+        description: "First appointment date"
+        data_type: date
+      - name: last_appointment_date
+        description: "Last appointment date"
+        data_type: date
+      - name: facilities_visited
+        description: "Number of facilities visited"
+        data_type: number
+      - name: brands_used
+        description: "Number of different TAG brands patient has used"
+        data_type: number
+      - name: lifetime_revenue
+        description: "Total revenue from this patient"
+        data_type: number
+      - name: lifetime_gross_profit
+        description: "Lifetime gross profit"
+        data_type: number
+      - name: lifetime_insurance_paid
+        description: "Lifetime insurance payments"
+        data_type: number
+      - name: lifetime_patient_paid
+        description: "Lifetime patient payments"
+        data_type: number
+      - name: total_transactions
+        description: "Total transactions"
+        data_type: number
+      - name: avg_transaction_value
+        description: "Average transaction value"
+        data_type: number
+      - name: patient_no_show_rate
+        description: "Patient's personal no-show rate"
+        data_type: number
+      - name: patient_cancellation_rate
+        description: "Patient's personal cancellation rate"
+        data_type: number
+
+  - name: fct_brand_daily_performance
+    description: >
+      Daily brand-level performance metrics for cross-brand comparison.
+      Enables week-over-week, month-over-month, and year-over-year analysis
+      at the brand level.
+      
+      Example questions this table answers:
+      - How is Aspen Dental performing vs ClearChoice this month?
+      - What's the revenue trend for WellNow week over week?
+      - Which brand has the best gross margin?
+    
+    columns:
+      - name: metric_date
+        description: "The date of the metrics"
+        data_type: date
+        tests:
+          - not_null
+      - name: brand_id
+        description: "Primary key for the brand"
+        data_type: number
+        tests:
+          - not_null
+      - name: brand_name
+        description: "Name of the brand"
+        data_type: varchar
+      - name: brand_code
+        description: "Short code for the brand"
+        data_type: varchar
+      - name: brand_category
+        description: "Business category"
+        data_type: varchar
+      - name: total_appointments
+        description: "Total appointments"
+        data_type: number
+      - name: completed_appointments
+        description: "Completed appointments"
+        data_type: number
+      - name: cancelled_appointments
+        description: "Cancelled appointments"
+        data_type: number
+      - name: no_show_appointments
+        description: "No-show appointments"
+        data_type: number
+      - name: new_patient_visits
+        description: "Number of new patient visits"
+        data_type: number
+      - name: unique_patients
+        description: "Unique patients"
+        data_type: number
+      - name: total_revenue
+        description: "Total revenue for the brand on this date"
+        data_type: number
+      - name: total_gross_profit
+        description: "Total gross profit"
+        data_type: number
+      - name: total_transactions
+        description: "Total transactions"
+        data_type: number
+      - name: active_facilities
+        description: "Active facilities"
+        data_type: number
+      - name: no_show_rate
+        description: "No-show rate percentage"
+        data_type: number
+      - name: cancellation_rate
+        description: "Cancellation rate percentage"
+        data_type: number
+      - name: revenue_per_visit
+        description: "Average revenue per completed visit"
+        data_type: number
+      - name: gross_margin_pct
+        description: "Gross margin as a percentage"
+        data_type: number
+      - name: metric_year
+        description: "Year extracted from metric_date"
+        data_type: number
+      - name: metric_month
+        description: "Month extracted from metric_date"
+        data_type: number
+      - name: metric_week
+        description: "Week number extracted from metric_date"
+        data_type: number
+      - name: metric_day_of_week
+        description: "Day of week extracted from metric_date"
+        data_type: number

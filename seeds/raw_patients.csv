@@ -1,0 +1,21 @@
+patient_id,first_name,last_name,email,phone,date_of_birth,gender,address,city,state,zip_code,primary_brand_id,acquisition_source,created_at,is_active
+P001,John,Smith,john.smith@email.com,312-555-0101,1985-03-15,M,100 Oak St,Chicago,IL,60601,1,google_ads,2023-01-15 09:30:00,true
+P002,Sarah,Johnson,sarah.j@email.com,312-555-0102,1978-07-22,F,200 Elm St,Chicago,IL,60602,1,referral,2023-02-20 14:15:00,true
+P003,Michael,Williams,m.williams@email.com,630-555-0103,1990-11-08,M,300 Maple Ave,Naperville,IL,60540,1,walk_in,2023-03-10 11:00:00,true
+P004,Emily,Brown,emily.b@email.com,317-555-0104,1982-05-30,F,400 Pine St,Indianapolis,IN,46204,1,insurance_referral,2023-04-05 16:45:00,true
+P005,David,Jones,david.jones@email.com,602-555-0105,1975-09-18,M,500 Cactus Dr,Phoenix,AZ,85016,1,google_ads,2023-05-12 10:30:00,true
+P006,Jennifer,Garcia,jen.garcia@email.com,813-555-0106,1988-12-03,F,600 Palm Ave,Tampa,FL,33602,1,social_media,2023-06-18 13:20:00,true
+P007,Robert,Martinez,r.martinez@email.com,312-555-0107,1965-02-28,M,700 State St,Chicago,IL,60603,2,tv_ad,2023-01-25 08:45:00,true
+P008,Lisa,Anderson,lisa.a@email.com,303-555-0108,1958-08-14,F,800 Broadway,Denver,CO,80202,2,referral,2023-03-08 15:30:00,true
+P009,James,Taylor,j.taylor@email.com,404-555-0109,1970-04-20,M,900 Peachtree Ln,Atlanta,GA,30308,2,google_ads,2023-04-22 09:15:00,true
+P010,Maria,Thomas,maria.t@email.com,315-555-0110,1992-06-12,F,1000 Salt City Rd,Syracuse,NY,13202,3,walk_in,2023-02-14 17:00:00,true
+P011,William,Jackson,will.j@email.com,585-555-0111,1987-10-25,M,1100 Genesee St,Rochester,NY,14604,3,insurance_referral,2023-05-30 12:45:00,true
+P012,Patricia,White,pat.white@email.com,716-555-0112,1995-01-07,F,1200 Delaware Ave,Buffalo,NY,14202,3,social_media,2023-07-08 14:30:00,true
+P013,Christopher,Harris,c.harris@email.com,480-555-0113,1983-03-19,M,1300 Scottsdale Rd,Scottsdale,AZ,85254,4,instagram,2023-08-15 10:00:00,true
+P014,Amanda,Martin,amanda.m@email.com,312-555-0114,1991-07-04,F,1400 Rush St,Chicago,IL,60611,4,referral,2023-09-20 16:15:00,true
+P015,Daniel,Thompson,dan.t@email.com,602-555-0115,1980-11-30,M,1500 Camelback Rd,Phoenix,AZ,85016,5,google_ads,2023-03-25 11:30:00,true
+P016,Michelle,Garcia,michelle.g@email.com,520-555-0116,1976-08-22,F,1600 Speedway Blvd,Tucson,AZ,85716,5,walk_in,2023-06-10 09:45:00,true
+P017,Kevin,Robinson,kevin.r@email.com,312-555-0117,1989-04-15,M,1700 Wacker Dr,Chicago,IL,60601,1,google_ads,2023-07-20 13:00:00,true
+P018,Nancy,Clark,nancy.c@email.com,630-555-0118,1972-12-08,F,1800 Washington St,Naperville,IL,60540,1,referral,2023-08-25 15:45:00,true
+P019,Steven,Lewis,steve.l@email.com,317-555-0119,1968-06-30,M,1900 Capitol Ave,Indianapolis,IN,46204,1,tv_ad,2023-09-15 10:15:00,true
+P020,Karen,Lee,karen.lee@email.com,602-555-0120,1994-02-14,F,2000 Indian School Rd,Phoenix,AZ,85016,1,social_media,2023-10-05 14:00:00,true

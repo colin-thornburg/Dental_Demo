@@ -1,0 +1,13 @@
+treatment_plan_id,patient_id,facility_id,provider_id,plan_name,total_estimated_cost,total_estimated_revenue,status,created_at,accepted_at,completed_at
+TP001,P001,101,DR001,Comprehensive Dental Care,485.00,1715.00,in_progress,2024-10-15 10:00:00,2024-10-15 10:30:00,
+TP002,P002,101,DR002,Cosmetic Enhancement Plan,1600.00,4025.00,accepted,2024-10-20 15:00:00,2024-10-25 09:00:00,
+TP003,P003,102,DR003,Preventive Care Plan,280.00,690.00,in_progress,2024-10-25 12:00:00,2024-10-25 12:30:00,
+TP004,P004,103,DR004,Family Dental Package,350.00,915.00,completed,2024-10-18 10:00:00,2024-10-18 10:30:00,2024-11-18 11:00:00
+TP005,P005,104,DR005,Orthodontic Treatment,2000.00,6150.00,accepted,2024-11-22 16:00:00,2024-11-22 16:30:00,
+TP006,P006,105,DR006,Basic Dental Maintenance,180.00,440.00,presented,2024-10-28 14:00:00,,
+TP007,P007,201,DR007,Single Implant Restoration,2050.00,5950.00,in_progress,2024-10-10 11:00:00,2024-10-10 14:00:00,
+TP008,P008,202,DR008,Full Arch Restoration,10350.00,29450.00,accepted,2024-10-22 12:00:00,2024-10-29 10:00:00,
+TP009,P009,203,DR009,Implant Consultation Plan,450.00,1450.00,in_progress,2024-11-05 15:00:00,2024-11-05 15:30:00,
+TP010,P013,401,DR013,Aesthetic Treatment Package,480.00,1425.00,accepted,2024-11-15 12:00:00,2024-11-15 12:30:00,
+TP011,P015,501,DR015,Pet Wellness Annual,185.00,495.00,completed,2024-10-12 10:00:00,2024-10-12 10:15:00,2024-11-12 10:00:00
+TP012,P016,502,DR016,Pet Dental Care,220.00,570.00,in_progress,2024-11-21 15:00:00,2024-11-21 15:30:00,

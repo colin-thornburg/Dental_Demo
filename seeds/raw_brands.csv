@@ -1,0 +1,6 @@
+brand_id,brand_name,brand_code,category,founded_year,is_active
+1,Aspen Dental,ASPEN,dental,1998,true
+2,ClearChoice Dental Implant Centers,CLEARCHOICE,dental_implants,2005,true
+3,WellNow Urgent Care,WELLNOW,urgent_care,2012,true
+4,Chapter Aesthetic Studio,CHAPTER,medical_aesthetics,2018,true
+5,Lovet Pet Health Care,LOVET,veterinary,2015,true

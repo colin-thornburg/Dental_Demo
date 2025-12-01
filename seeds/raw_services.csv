@@ -1,0 +1,29 @@
+service_id,brand_id,service_code,service_name,service_category,standard_price,cost,duration_minutes,is_active
+SVC001,1,D0120,Periodic Oral Evaluation,Diagnostic,65.00,15.00,15,true
+SVC002,1,D0150,Comprehensive Oral Evaluation,Diagnostic,95.00,25.00,30,true
+SVC003,1,D0210,Full Mouth X-Rays,Diagnostic,150.00,35.00,20,true
+SVC004,1,D1110,Adult Prophylaxis Cleaning,Preventive,125.00,30.00,45,true
+SVC005,1,D2391,Posterior Composite Filling,Restorative,225.00,65.00,45,true
+SVC006,1,D2750,Crown Porcelain,Restorative,1250.00,350.00,90,true
+SVC007,1,D7140,Extraction Erupted Tooth,Oral Surgery,275.00,55.00,30,true
+SVC008,1,D8080,Comprehensive Orthodontic,Orthodontics,5500.00,1800.00,60,true
+SVC009,2,IMP001,Single Tooth Implant,Implants,4500.00,1500.00,120,true
+SVC010,2,IMP002,Full Arch Restoration,Implants,28000.00,9500.00,480,true
+SVC011,2,IMP003,Implant Consultation,Consultation,250.00,50.00,60,true
+SVC012,2,IMP004,Bone Graft,Implants,1200.00,400.00,60,true
+SVC013,3,UC001,Urgent Care Visit,Office Visit,175.00,45.00,30,true
+SVC014,3,UC002,X-Ray Diagnostic,Diagnostic,125.00,30.00,15,true
+SVC015,3,UC003,Lab Work Basic Panel,Laboratory,95.00,25.00,10,true
+SVC016,3,UC004,Flu Test Rapid,Laboratory,65.00,15.00,10,true
+SVC017,3,UC005,COVID Test PCR,Laboratory,150.00,45.00,15,true
+SVC018,3,UC006,Laceration Repair,Procedure,350.00,85.00,45,true
+SVC019,4,AES001,Botox Treatment,Injectables,450.00,150.00,30,true
+SVC020,4,AES002,Dermal Filler,Injectables,750.00,250.00,45,true
+SVC021,4,AES003,Chemical Peel,Skin Treatment,225.00,55.00,45,true
+SVC022,4,AES004,Laser Hair Removal,Laser Treatment,350.00,75.00,60,true
+SVC023,4,AES005,Aesthetic Consultation,Consultation,125.00,25.00,30,true
+SVC024,5,VET001,Wellness Exam,Preventive,75.00,20.00,30,true
+SVC025,5,VET002,Vaccination Package,Preventive,145.00,40.00,20,true
+SVC026,5,VET003,Dental Cleaning Pet,Dental,425.00,125.00,90,true
+SVC027,5,VET004,Spay Neuter Surgery,Surgery,350.00,95.00,60,true
+SVC028,5,VET005,Emergency Visit,Emergency,250.00,65.00,45,true

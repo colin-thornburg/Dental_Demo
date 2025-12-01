@@ -1,0 +1,239 @@
+version: 2
+
+semantic_models:
+  - name: facility_metrics
+    description: >
+      Semantic model for facility-level healthcare operations metrics.
+      This model powers natural language queries about patient visits, 
+      revenue, and operational performance across all TAG brands.
+    
+    model: ref('fct_daily_facility_metrics')
+    
+    defaults:
+      agg_time_dimension: metric_date
+    
+    entities:
+      - name: facility
+        type: primary
+        expr: facility_id
+      - name: brand
+        type: foreign
+        expr: brand_id
+    
+    dimensions:
+      - name: metric_date
+        type: time
+        type_params:
+          time_granularity: day
+        description: "The date of the metrics"
+      
+      - name: facility_name
+        type: categorical
+        description: "Name of the facility/office"
+      
+      - name: facility_city
+        type: categorical
+        description: "City where the facility is located"
+      
+      - name: facility_state
+        type: categorical
+        description: "State where the facility is located"
+      
+      - name: region
+        type: categorical
+        description: "Geographic region (Midwest, Southwest, Southeast, Northeast, Mountain)"
+      
+      - name: brand_name
+        type: categorical
+        description: "Name of the TAG brand (Aspen Dental, ClearChoice, WellNow, Chapter, Lovet)"
+      
+      - name: brand_code
+        type: categorical
+        description: "Short code for the brand"
+      
+      - name: brand_category
+        type: categorical
+        description: "Business category (dental, dental_implants, urgent_care, medical_aesthetics, veterinary)"
+    
+    measures:
+      - name: total_appointments
+        agg: sum
+        expr: total_appointments
+        description: "Total number of appointments"
+      
+      - name: completed_appointments
+        agg: sum
+        expr: completed_appointments
+        description: "Number of completed appointments"
+      
+      - name: cancelled_appointments
+        agg: sum
+        expr: cancelled_appointments
+        description: "Number of cancelled appointments"
+      
+      - name: no_show_appointments
+        agg: sum
+        expr: no_show_appointments
+        description: "Number of no-show appointments"
+      
+      - name: new_patient_visits
+        agg: sum
+        expr: new_patient_visits
+        description: "Number of new patient visits"
+      
+      - name: unique_patients
+        agg: sum
+        expr: unique_patients
+        description: "Count of unique patients"
+      
+      - name: total_revenue
+        agg: sum
+        expr: total_revenue
+        description: "Total revenue in dollars"
+      
+      - name: total_gross_profit
+        agg: sum
+        expr: total_gross_profit
+        description: "Total gross profit in dollars"
+      
+      - name: total_insurance_revenue
+        agg: sum
+        expr: total_insurance_revenue
+        description: "Revenue from insurance payments"
+      
+      - name: total_patient_revenue
+        agg: sum
+        expr: total_patient_revenue
+        description: "Revenue from patient payments"
+      
+      - name: total_discounts
+        agg: sum
+        expr: total_discounts
+        description: "Total discounts applied"
+      
+      - name: total_transactions
+        agg: sum
+        expr: total_transactions
+        description: "Number of financial transactions"
+
+metrics:
+  # Revenue Metrics
+  - name: revenue
+    label: "Total Revenue"
+    description: "Total revenue across all services and facilities"
+    type: simple
+    type_params:
+      measure: total_revenue
+  
+  - name: gross_profit
+    label: "Gross Profit"
+    description: "Total gross profit (revenue minus direct costs)"
+    type: simple
+    type_params:
+      measure: total_gross_profit
+  
+  - name: insurance_revenue
+    label: "Insurance Revenue"
+    description: "Revenue received from insurance payers"
+    type: simple
+    type_params:
+      measure: total_insurance_revenue
+  
+  - name: patient_revenue
+    label: "Patient Revenue"
+    description: "Revenue received directly from patients"
+    type: simple
+    type_params:
+      measure: total_patient_revenue
+  
+  # Patient Visit Metrics
+  - name: appointments
+    label: "Total Appointments"
+    description: "Total number of appointments scheduled"
+    type: simple
+    type_params:
+      measure: total_appointments
+  
+  - name: completed_visits
+    label: "Completed Visits"
+    description: "Number of appointments that were completed"
+    type: simple
+    type_params:
+      measure: completed_appointments
+  
+  - name: new_patients
+    label: "New Patient Visits"
+    description: "Number of new patient visits (first-time patients)"
+    type: simple
+    type_params:
+      measure: new_patient_visits
+  
+  - name: no_shows
+    label: "No-Show Count"
+    description: "Number of appointments where patient did not show up"
+    type: simple
+    type_params:
+      measure: no_show_appointments
+  
+  - name: cancellations
+    label: "Cancellation Count"
+    description: "Number of cancelled appointments"
+    type: simple
+    type_params:
+      measure: cancelled_appointments
+  
+  # Rate Metrics (Derived)
+  - name: no_show_rate
+    label: "No-Show Rate"
+    description: "Percentage of appointments that resulted in no-shows"
+    type: derived
+    type_params:
+      expr: (no_shows * 1.0 / nullif(appointments, 0)) * 100
+      metrics:
+        - no_shows
+        - appointments
+  
+  - name: cancellation_rate
+    label: "Cancellation Rate"
+    description: "Percentage of appointments that were cancelled"
+    type: derived
+    type_params:
+      expr: (cancellations * 1.0 / nullif(appointments, 0)) * 100
+      metrics:
+        - cancellations
+        - appointments
+  
+  - name: revenue_per_visit
+    label: "Revenue Per Visit"
+    description: "Average revenue per completed patient visit"
+    type: derived
+    type_params:
+      expr: revenue / nullif(completed_visits, 0)
+      metrics:
+        - revenue
+        - completed_visits
+  
+  - name: gross_margin_pct
+    label: "Gross Margin %"
+    description: "Gross profit as a percentage of revenue"
+    type: derived
+    type_params:
+      expr: (gross_profit * 1.0 / nullif(revenue, 0)) * 100
+      metrics:
+        - gross_profit
+        - revenue
+  
+  # Cumulative Metrics for Trending
+  - name: cumulative_revenue
+    label: "Cumulative Revenue"
+    description: "Running total of revenue over time"
+    type: cumulative
+    type_params:
+      measure: total_revenue
+  
+  - name: cumulative_new_patients
+    label: "Cumulative New Patients"
+    description: "Running total of new patient acquisitions"
+    type: cumulative
+    type_params:
+      measure: new_patient_visits

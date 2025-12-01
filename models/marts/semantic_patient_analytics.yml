@@ -1,0 +1,167 @@
+version: 2
+
+semantic_models:
+  - name: patient_analytics
+    description: >
+      Semantic model for patient-level analytics including demographics,
+      lifetime value, and behavioral patterns. Enables questions about
+      patient segments, acquisition effectiveness, and retention.
+    
+    model: ref('dim_patient_summary')
+    
+    entities:
+      - name: patient
+        type: primary
+        expr: patient_id
+      - name: brand
+        type: foreign
+        expr: primary_brand_id
+    
+    dimensions:
+      - name: patient_created_at
+        type: time
+        type_params:
+          time_granularity: day
+        description: "Date when patient record was created"
+      
+      - name: gender
+        type: categorical
+        description: "Patient gender (M/F)"
+      
+      - name: state
+        type: categorical
+        description: "Patient's state of residence"
+      
+      - name: city
+        type: categorical
+        description: "Patient's city of residence"
+      
+      - name: age_group
+        type: categorical
+        description: "Patient age bucket (Under 18, 18-34, 35-54, 55-64, 65+)"
+      
+      - name: acquisition_source
+        type: categorical
+        description: "How patient was acquired (google_ads, referral, walk_in, tv_ad, social_media, instagram, insurance_referral)"
+      
+      - name: primary_brand_name
+        type: categorical
+        description: "The primary brand the patient uses"
+      
+      - name: primary_brand_category
+        type: categorical
+        description: "Category of the patient's primary brand"
+      
+      - name: is_active
+        type: categorical
+        description: "Whether the patient is currently active"
+    
+    measures:
+      - name: patient_count
+        agg: count
+        expr: patient_id
+        description: "Count of patients"
+        agg_time_dimension: patient_created_at
+      
+      - name: total_lifetime_revenue
+        agg: sum
+        expr: lifetime_revenue
+        description: "Sum of lifetime revenue from patients"
+        agg_time_dimension: patient_created_at
+      
+      - name: total_lifetime_profit
+        agg: sum
+        expr: lifetime_gross_profit
+        description: "Sum of lifetime gross profit from patients"
+        agg_time_dimension: patient_created_at
+      
+      - name: total_appointments_all
+        agg: sum
+        expr: total_appointments
+        description: "Total appointments across all patients"
+        agg_time_dimension: patient_created_at
+      
+      - name: total_no_shows
+        agg: sum
+        expr: no_show_appointments
+        description: "Total no-show appointments"
+        agg_time_dimension: patient_created_at
+      
+      - name: total_cancellations
+        agg: sum
+        expr: cancelled_appointments
+        description: "Total cancelled appointments"
+        agg_time_dimension: patient_created_at
+      
+      - name: avg_patient_age
+        agg: average
+        expr: age
+        description: "Average age of patients"
+        agg_time_dimension: patient_created_at
+
+metrics:
+  # Patient Count Metrics
+  - name: total_patients
+    label: "Total Patients"
+    description: "Total count of patients"
+    type: simple
+    type_params:
+      measure: patient_count
+  
+  # Lifetime Value Metrics
+  - name: patient_lifetime_revenue
+    label: "Patient Lifetime Revenue"
+    description: "Total lifetime revenue from patients"
+    type: simple
+    type_params:
+      measure: total_lifetime_revenue
+  
+  - name: patient_lifetime_profit
+    label: "Patient Lifetime Profit"
+    description: "Total lifetime gross profit from patients"
+    type: simple
+    type_params:
+      measure: total_lifetime_profit
+  
+  - name: average_patient_ltv
+    label: "Average Patient LTV"
+    description: "Average lifetime value per patient"
+    type: derived
+    type_params:
+      expr: patient_lifetime_revenue / nullif(total_patients, 0)
+      metrics:
+        - patient_lifetime_revenue
+        - total_patients
+  
+  # Behavioral Metrics
+  - name: patient_no_show_rate
+    label: "Patient No-Show Rate"
+    description: "Overall no-show rate across patient base"
+    type: derived
+    type_params:
+      expr: (total_no_shows * 1.0 / nullif(total_appointments_sum, 0)) * 100
+      metrics:
+        - total_no_shows
+        - total_appointments_sum
+  
+  - name: total_no_shows
+    label: "Total No-Shows"
+    description: "Total count of no-show appointments"
+    type: simple
+    type_params:
+      measure: total_no_shows
+  
+  - name: total_appointments_sum
+    label: "Total Patient Appointments"
+    description: "Total appointments for patient analysis"
+    type: simple
+    type_params:
+      measure: total_appointments_all
+  
+  # Demographics
+  - name: average_age
+    label: "Average Patient Age"
+    description: "Average age of patients"
+    type: simple
+    type_params:
+      measure: avg_patient_age

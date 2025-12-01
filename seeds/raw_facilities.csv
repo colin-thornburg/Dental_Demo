@@ -1,0 +1,16 @@
+facility_id,brand_id,facility_name,facility_code,address,city,state,zip_code,region,opened_date,is_active,capacity_per_day
+101,1,Aspen Dental Chicago Downtown,ASPEN-CHI-001,123 Michigan Ave,Chicago,IL,60601,Midwest,2015-03-15,true,45
+102,1,Aspen Dental Naperville,ASPEN-NAP-001,456 Ogden Ave,Naperville,IL,60540,Midwest,2018-06-20,true,38
+103,1,Aspen Dental Indianapolis,ASPEN-IND-001,789 Meridian St,Indianapolis,IN,46204,Midwest,2016-09-10,true,42
+104,1,Aspen Dental Phoenix,ASPEN-PHX-001,321 Camelback Rd,Phoenix,AZ,85016,Southwest,2019-01-08,true,50
+105,1,Aspen Dental Tampa,ASPEN-TPA-001,555 Kennedy Blvd,Tampa,FL,33602,Southeast,2017-04-22,true,40
+201,2,ClearChoice Chicago,CC-CHI-001,200 N LaSalle St,Chicago,IL,60601,Midwest,2018-02-14,true,25
+202,2,ClearChoice Denver,CC-DEN-001,1600 Glenarm Pl,Denver,CO,80202,Mountain,2019-07-30,true,22
+203,2,ClearChoice Atlanta,CC-ATL-001,400 Peachtree St,Atlanta,GA,30308,Southeast,2020-03-05,true,28
+301,3,WellNow Syracuse,WN-SYR-001,100 Erie Blvd,Syracuse,NY,13202,Northeast,2016-11-12,true,80
+302,3,WellNow Rochester,WN-ROC-001,250 East Ave,Rochester,NY,14604,Northeast,2017-08-25,true,75
+303,3,WellNow Buffalo,WN-BUF-001,500 Main St,Buffalo,NY,14202,Northeast,2018-05-18,true,70
+401,4,Chapter Scottsdale,CH-SCO-001,7000 E Shea Blvd,Scottsdale,AZ,85254,Southwest,2020-09-01,true,35
+402,4,Chapter Chicago,CH-CHI-001,900 N Michigan Ave,Chicago,IL,60611,Midwest,2021-03-15,true,30
+501,5,Lovet Phoenix,LV-PHX-001,2200 E Camelback Rd,Phoenix,AZ,85016,Southwest,2019-04-10,true,60
+502,5,Lovet Tucson,LV-TUC-001,3500 E Speedway Blvd,Tucson,AZ,85716,Southwest,2020-01-20,true,55

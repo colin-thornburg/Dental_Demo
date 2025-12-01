@@ -1,0 +1,169 @@
+version: 2
+
+models:
+  - name: stg_brands
+    description: "Staged brands data representing the five TAG healthcare brands"
+    columns:
+      - name: brand_id
+        description: "Primary key for the brand"
+        tests:
+          - unique
+          - not_null
+      - name: brand_name
+        description: "Full name of the brand (e.g., Aspen Dental, ClearChoice)"
+      - name: brand_code
+        description: "Short code identifier for the brand"
+      - name: category
+        description: "Business category (dental, dental_implants, urgent_care, medical_aesthetics, veterinary)"
+      - name: is_active
+        description: "Whether the brand is currently active"
+
+  - name: stg_facilities
+    description: "Staged facilities/offices data across all TAG brands"
+    columns:
+      - name: facility_id
+        description: "Primary key for the facility"
+        tests:
+          - unique
+          - not_null
+      - name: brand_id
+        description: "Foreign key to the brand"
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_brands')
+                field: brand_id
+      - name: facility_name
+        description: "Name of the facility"
+      - name: region
+        description: "Geographic region (Midwest, Southwest, Southeast, Northeast, Mountain)"
+      - name: capacity_per_day
+        description: "Maximum patient capacity per day"
+
+  - name: stg_patients
+    description: "Staged patient/customer data"
+    columns:
+      - name: patient_id
+        description: "Primary key for the patient"
+        tests:
+          - unique
+          - not_null
+      - name: primary_brand_id
+        description: "The brand the patient primarily uses"
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_brands')
+                field: brand_id
+      - name: acquisition_source
+        description: "How the patient was acquired (google_ads, referral, walk_in, etc.)"
+      - name: full_name
+        description: "Patient's full name (first + last)"
+
+  - name: stg_providers
+    description: "Staged provider/clinician data"
+    columns:
+      - name: provider_id
+        description: "Primary key for the provider"
+        tests:
+          - unique
+          - not_null
+      - name: facility_id
+        description: "Primary facility where provider works"
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_facilities')
+                field: facility_id
+      - name: credential
+        description: "Provider credential (DDS, DMD, MD, DO, DVM, etc.)"
+      - name: specialty
+        description: "Provider's specialty area"
+
+  - name: stg_services
+    description: "Staged services/procedures catalog"
+    columns:
+      - name: service_id
+        description: "Primary key for the service"
+        tests:
+          - unique
+          - not_null
+      - name: brand_id
+        description: "Brand that offers this service"
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_brands')
+                field: brand_id
+      - name: service_code
+        description: "Industry standard code (CDT codes for dental, etc.)"
+      - name: service_category
+        description: "Category of service (Diagnostic, Preventive, Restorative, etc.)"
+      - name: gross_margin
+        description: "Calculated gross margin (standard_price - cost)"
+
+  - name: stg_appointments
+    description: "Staged appointment data with status tracking"
+    columns:
+      - name: appointment_id
+        description: "Primary key for the appointment"
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        description: "Foreign key to patient"
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_patients')
+                field: patient_id
+      - name: facility_id
+        description: "Foreign key to facility"
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_facilities')
+                field: facility_id
+      - name: status
+        description: "Appointment status (completed, cancelled, no_show, scheduled)"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['completed', 'cancelled', 'no_show', 'scheduled']
+      - name: is_no_show
+        description: "Flag indicating if patient was a no-show"
+      - name: is_cancelled
+        description: "Flag indicating if appointment was cancelled"
+
+  - name: stg_treatment_plans
+    description: "Staged treatment plan data"
+    columns:
+      - name: treatment_plan_id
+        description: "Primary key for the treatment plan"
+        tests:
+          - unique
+          - not_null
+      - name: status
+        description: "Plan status (presented, accepted, in_progress, completed)"
+      - name: estimated_gross_profit
+        description: "Calculated estimated profit from the plan"
+
+  - name: stg_transactions
+    description: "Staged financial transaction data"
+    columns:
+      - name: transaction_id
+        description: "Primary key for the transaction"
+        tests:
+          - unique
+          - not_null
+      - name: appointment_id
+        description: "Foreign key to appointment"
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_appointments')
+                field: appointment_id
+      - name: total_revenue
+        description: "Total revenue from this transaction"
+      - name: gross_profit
+        description: "Calculated gross profit (revenue - cost)"

@@ -1,7 +1,10 @@
 interface MetricCardProps {
   title: string;
+  value: string;
+  loading: boolean;
   icon: React.ReactNode;
   color: 'blue' | 'green' | 'purple' | 'orange';
+  onClick: () => void;
 }
 
 const colorClasses = {
@@ -11,18 +14,33 @@ const colorClasses = {
   orange: 'from-orange-500 to-orange-600'
 };
 
-export default function MetricCard({ title, icon, color }: MetricCardProps) {
+export default function MetricCard({ title, value, loading, icon, color, onClick }: MetricCardProps) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
+    <button
+      onClick={onClick}
+      disabled={loading}
+      className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg hover:border-blue-300 transition-all duration-200 text-left w-full disabled:opacity-50 disabled:cursor-not-allowed group"
+    >
       <div className="flex items-center justify-between mb-4">
-        <div className={`w-12 h-12 bg-gradient-to-br ${colorClasses[color]} rounded-lg flex items-center justify-center text-white`}>
+        <div className={`w-12 h-12 bg-gradient-to-br ${colorClasses[color]} rounded-lg flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-200`}>
           {icon}
         </div>
       </div>
       <h3 className="text-sm font-medium text-gray-600 mb-1">{title}</h3>
-      <p className="text-2xl font-bold text-gray-900">--</p>
-      <p className="text-xs text-gray-400 mt-2">Query to see data</p>
-    </div>
+      {loading ? (
+        <div className="flex items-center gap-2">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+          <p className="text-sm text-gray-500">Loading...</p>
+        </div>
+      ) : (
+        <>
+          <p className="text-2xl font-bold text-gray-900">{value}</p>
+          <p className="text-xs text-gray-400 mt-2">
+            {value === '--' ? '👆 Click to load data' : '✓ Data loaded'}
+          </p>
+        </>
+      )}
+    </button>
   );
 }
 

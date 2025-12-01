@@ -10,10 +10,89 @@ export default function Home() {
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Array<{role: string, content: string, data?: any}>>([]);
   const [loading, setLoading] = useState(false);
+  const [metrics, setMetrics] = useState<{[key: string]: {value: string, loading: boolean}}>({
+    revenue: { value: '--', loading: false },
+    appointments: { value: '--', loading: false },
+    new_patients: { value: '--', loading: false },
+    no_show_rate: { value: '--', loading: false }
+  });
 
   const handleReset = () => {
     setMessages([]);
     setQuery('');
+    // Reset metrics
+    setMetrics({
+      revenue: { value: '--', loading: false },
+      appointments: { value: '--', loading: false },
+      new_patients: { value: '--', loading: false },
+      no_show_rate: { value: '--', loading: false }
+    });
+  };
+
+  const handleMetricClick = async (metricName: string, displayName: string) => {
+    // Set loading state
+    setMetrics(prev => ({
+      ...prev,
+      [metricName]: { ...prev[metricName], loading: true }
+    }));
+
+    try {
+      const response = await fetch('http://localhost:5001/api/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          metrics: [metricName],
+          dimensions: [],
+          limit: 1
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.success && data.output) {
+        // Parse the output to extract the value
+        const lines = data.output.split('\n').filter((line: string) => line.trim());
+        const dataLines = lines.filter((line: string) => line.startsWith('|') && !line.includes('---'));
+        
+        if (dataLines.length >= 2) {
+          const valueLine = dataLines[1];
+          const values = valueLine.split('|').map((v: string) => v.trim()).filter((v: string) => v && v !== '+');
+          
+          if (values.length > 0) {
+            const rawValue = values[0];
+            // Format the value nicely
+            let formattedValue = rawValue;
+            
+            // Format numbers with commas
+            if (!isNaN(parseFloat(rawValue))) {
+              const num = parseFloat(rawValue);
+              if (metricName.includes('rate')) {
+                formattedValue = `${num.toFixed(1)}%`;
+              } else if (metricName === 'revenue') {
+                formattedValue = `$${num.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+              } else {
+                formattedValue = num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+              }
+            }
+            
+            setMetrics(prev => ({
+              ...prev,
+              [metricName]: { value: formattedValue, loading: false }
+            }));
+          }
+        }
+      } else {
+        setMetrics(prev => ({
+          ...prev,
+          [metricName]: { value: 'Error', loading: false }
+        }));
+      }
+    } catch (error) {
+      setMetrics(prev => ({
+        ...prev,
+        [metricName]: { value: 'Error', loading: false }
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,27 +173,39 @@ export default function Home() {
         {/* Quick Metrics */}
         {messages.length === 0 && (
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Quick Metrics</h2>
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">Quick Metrics (Click to Load)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <MetricCard
                 title="Total Revenue"
+                value={metrics.revenue.value}
+                loading={metrics.revenue.loading}
                 icon={<DollarSign className="w-5 h-5" />}
                 color="blue"
+                onClick={() => handleMetricClick('revenue', 'Total Revenue')}
               />
               <MetricCard
-                title="Patient Visits"
+                title="Total Appointments"
+                value={metrics.appointments.value}
+                loading={metrics.appointments.loading}
                 icon={<Users className="w-5 h-5" />}
                 color="green"
+                onClick={() => handleMetricClick('appointments', 'Total Appointments')}
               />
               <MetricCard
-                title="Growth Rate"
+                title="New Patients"
+                value={metrics.new_patients.value}
+                loading={metrics.new_patients.loading}
                 icon={<TrendingUp className="w-5 h-5" />}
                 color="purple"
+                onClick={() => handleMetricClick('new_patients', 'New Patients')}
               />
               <MetricCard
-                title="Active Facilities"
+                title="No-Show Rate"
+                value={metrics.no_show_rate.value}
+                loading={metrics.no_show_rate.loading}
                 icon={<BarChart3 className="w-5 h-5" />}
                 color="orange"
+                onClick={() => handleMetricClick('no_show_rate', 'No-Show Rate')}
               />
             </div>
           </div>

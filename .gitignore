@@ -4,3 +4,19 @@ target/
 dbt_packages/
 logs/
 dbt_internal_packages/
+
+# Python
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+
+# Node
+app/node_modules/
+app/.next/
+app/out/
+app/.env
+app/.env.local
+
+# OS
+.DS_Store

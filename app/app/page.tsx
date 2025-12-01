@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, BarChart3, TrendingUp, Users, DollarSign } from 'lucide-react';
+import { Send, BarChart3, TrendingUp, Users, DollarSign, Home, RefreshCw } from 'lucide-react';
 import MetricCard from '@/components/MetricCard';
 import ChatMessage from '@/components/ChatMessage';
 import QueryResults from '@/components/QueryResults';
@@ -10,6 +10,11 @@ export default function Home() {
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Array<{role: string, content: string, data?: any}>>([]);
   const [loading, setLoading] = useState(false);
+
+  const handleReset = () => {
+    setMessages([]);
+    setQuery('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,9 +71,20 @@ export default function Home() {
                 <p className="text-sm text-gray-500">Powered by dbt Semantic Layer</p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-sm font-medium text-gray-600">The Aspen Group</p>
-              <p className="text-xs text-gray-400">Putting care back in healthcare</p>
+            <div className="flex items-center gap-4">
+              {messages.length > 0 && (
+                <button
+                  onClick={handleReset}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+                >
+                  <Home className="w-4 h-4" />
+                  Back to Home
+                </button>
+              )}
+              <div className="text-right">
+                <p className="text-sm font-medium text-gray-600">The Aspen Group</p>
+                <p className="text-xs text-gray-400">Putting care back in healthcare</p>
+              </div>
             </div>
           </div>
         </div>
@@ -106,13 +122,25 @@ export default function Home() {
 
         {/* Chat Messages */}
         {messages.length > 0 && (
-          <div className="mb-8 space-y-4">
-            {messages.map((msg, idx) => (
-              <div key={idx}>
-                <ChatMessage message={msg} />
-                {msg.data && <QueryResults data={msg.data} />}
-              </div>
-            ))}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-700">Conversation</h2>
+              <button
+                onClick={handleReset}
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+              >
+                <RefreshCw className="w-4 h-4" />
+                New Query
+              </button>
+            </div>
+            <div className="space-y-4">
+              {messages.map((msg, idx) => (
+                <div key={idx}>
+                  <ChatMessage message={msg} />
+                  {msg.data && <QueryResults data={msg.data} />}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

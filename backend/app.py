@@ -9,7 +9,8 @@ from openai import OpenAI
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+# Allow CORS from both port 3000 and 3001 for development
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -188,5 +189,6 @@ def chat():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Use port 5001 to avoid conflicts with macOS AirPlay on port 5000
+    app.run(debug=True, port=5001, host='0.0.0.0')
 

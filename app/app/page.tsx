@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, BarChart3, TrendingUp, Users, DollarSign, Home, RefreshCw } from 'lucide-react';
+import { Send, BarChart3, TrendingUp, Users, DollarSign, Home as HomeIcon, RefreshCw } from 'lucide-react';
 import MetricCard from '@/components/MetricCard';
 import ChatMessage from '@/components/ChatMessage';
 import QueryResults from '@/components/QueryResults';
@@ -77,7 +77,7 @@ export default function Home() {
                   onClick={handleReset}
                   className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
                 >
-                  <Home className="w-4 h-4" />
+                  <HomeIcon className="w-4 h-4" />
                   Back to Home
                 </button>
               )}
